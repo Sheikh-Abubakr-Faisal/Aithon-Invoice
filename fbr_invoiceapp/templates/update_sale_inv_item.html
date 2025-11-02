@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="container form-container mt-5 mb-5 card shadow-lg">
+        <div>
+            <form method='POST' action="">
+                {% csrf_token %}
+                <div class="row container mb-5 mt-4">
+                    {% if messages %} {{ message.tags }}
+                    <div class="alert alert-primary" role="alert">
+                    {% for message in messages %} {{ message }} {% endfor %}
+                    </div>
+                    {% endif %}
+                    <h4 class="mb-3 fw-bold">Update Item</h4>
+
+                    <div class="row">   
+                            <hr>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item" class="form-label">Item</label>
+                                <select name="item" id="item" class="form-control">
+                                    <option name="item" value="" selected>Select Item</option>
+                                    {% for product in products %}
+                                        <option value="{{ product.id }}" {% if product.id == item.product.id %}selected{% endif %}>{{ product.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_unit_price" class="form-label">Unit Price</label>
+                                <input type="number" class="form-control" name="item_unit_price" id="item_unit_price" value="{{ item.unit_price|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" name="item_quantity" id="item_quantity" value="{{ item.quantity|default:1 }}">
+                            </div>
+                            <div class="col-lg-12 row">
+                            <Details>
+<summary style="font-size: 15px;">More</summary>
+<hr>
+<div class="row">
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="rate" class="form-label">Tax Rate</label>
+        <select name="rate" id="rate" class="form-control" required>
+            <option value="">Select Rate</option>
+            {% for r in rates %}
+                <option value="{{ r.ratE_VALUE }}" data-id="{{ r.ratE_ID }}"
+                    {% if r.ratE_VALUE == item.rate %}selected{% endif %}>
+                    {{ r.ratE_ID }} - {{ r.ratE_DESC }} ({{ r.ratE_VALUE }}%)
+                </option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="rateId" id="rateId" value="{{ item.rateId }}">
+    </div>
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="retailPrice" class="form-label">Retail Price</label>
+                                <input type="number" class="form-control" name="retailPrice" id="retailPrice" value="{{ sale_item.retailPrice|default:0 }}">
+                            </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="salesTaxWithheldAtSource" class="form-label">Withholding Tax</label>
+        <input type="number" class="form-control" name="salesTaxWithheldAtSource"
+               id="salesTaxWithheldAtSource" value="{{ item.salesTaxWithheldAtSource|default:0 }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="extraTax" class="form-label">Extra Tax</label>
+        <input type="number" class="form-control" name="extraTax" id="extraTax"
+               value="{{ item.extraTax|default:0 }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="furtherTax" class="form-label">Further Tax</label>
+        <input type="number" class="form-control" name="furtherTax" id="furtherTax"
+               value="{{ item.furtherTax|default:0 }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="fedPayable" class="form-label">FED Payable</label>
+        <input type="number" class="form-control" name="fedPayable" id="fedPayable"
+               value="{{ item.fedPayable|default:0 }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="discount" class="form-label">Discount</label>
+        <input type="number" class="form-control" name="discount" id="discount"
+               value="{{ item.discount|default:0 }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="saleType" class="form-label">Transaction Type</label>
+        <select name="saleType" id="saleType" class="form-control" required>
+            <option value="">-- Select Transaction Type --</option>
+            {% for tt in transaction_types %}
+                <option value="{{ tt.transactioN_TYPE_ID }}"
+                        data-desc="{{ tt.transactioN_DESC }}"
+                        {% if tt.transactioN_TYPE_ID == item.saleType %}selected{% endif %}>
+                    {{ tt.transactioN_TYPE_ID }} - {{ tt.transactioN_DESC }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="saleTypeDesc" id="saleTypeDesc" value="{{ item.saleTypeDesc }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="sroScheduleNo" class="form-label">SRO Schedule</label>
+        <select name="sroScheduleNo" id="sroScheduleNo" class="form-control">
+            <option value="">Select SRO Schedule</option>
+            {% for sro in sro_schedule %}
+                <option value="{{ sro.srO_ID }}" data-desc="{{ sro.srO_DESC }}"
+                    {% if sro.srO_ID == item.sroScheduleNo %}selected{% endif %}>
+                    {{ sro.srO_ID }} - {{ sro.srO_DESC }}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="sroScheduleDesc" id="sroScheduleDesc" value="{{ item.sroScheduleDesc }}">
+    </div>
+
+    <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+        <label for="sroItemSerialNo" class="form-label">SRO Item Serial No.</label>
+        <select name="sroItemSerialNo" id="sroItemSerialNo" class="form-control">
+            <option value="">Select SRO Item</option>
+            {% for sro in sro_items %}
+                <option value="{{ sro.srO_ITEM_DESC }}"
+                    {% if sro.srO_ITEM_DESC == item.sroItemSerialNo %}selected{% endif %}>
+                    {{ sro.srO_ITEM_ID }} - {{ sro.srO_ITEM_DESC }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+</div>
+</Details>
+</div></div>
+                            
+                            <div class="col-lg-3 mb-1 mt-4"><button type="submit" class="btn btn-primary btn-lg">Update Item</button></div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+$(document).ready(function() {
+    $('#item, #sroItemSerialNo, #saleType, #sroScheduleNo, #rate').select2({
+        theme: "bootstrap-5",
+        placeholder: "Select option",
+        allowClear: true,
+        width: '100%'
+    });
+
+    // Load Rates dynamically when Sale Type changes
+    $('#saleType').on('change', function () {
+        let transId = $(this).val();
+        let transDesc = $(this).find(':selected').data('desc');
+        let invoiceId = "{{ invoice.id }}";  
+        if (!transId || !invoiceId) return;
+        $('#saleTypeDesc').val(transDesc);
+
+        $.ajax({
+            url: "{% url 'get_rates' %}",
+            data: { transTypeId: transId, invoiceId: invoiceId },
+            success: function (data) {
+                let $rate = $('#rate');
+                $rate.empty().append('<option value="">Select Rate</option>');
+                data.forEach(r => {
+                    $rate.append(
+                        `<option value="${r.ratE_VALUE}" data-id="${r.ratE_ID}">
+                            ${r.ratE_ID} - ${r.ratE_DESC} (${r.ratE_VALUE}%)
+                        </option>`
+                    );
+                });
+                $rate.trigger('change.select2');
+            },
+            error: function(xhr) {
+                console.error("Error loading rates:", xhr.responseText);
+            }
+        });
+    });
+
+    // When Rate changes, load SRO Schedules
+    $('#rate').on('select2:select', function () {
+        let rateId = $(this).find(":selected").data("id");
+        $('#rateId').val(rateId);
+
+        let invoiceId = "{{ invoice.id }}";
+        if (!rateId || !invoiceId) return;
+
+        $.ajax({
+            url: "{% url 'get_sro_schedule' %}",
+            data: { rateId: rateId, invoiceId: invoiceId },
+            success: function (data) {
+                let $sroSchedule = $('#sroScheduleNo');
+                $sroSchedule.empty().append('<option value="">Select SRO Schedule</option>');
+                let schedules = Array.isArray(data) ? data : data.SroSchedule || [];
+                schedules.forEach(sro => {
+                    $sroSchedule.append(
+                        `<option value="${sro.srO_ID}" data-desc="${sro.srO_DESC}">
+                            ${sro.srO_ID} - ${sro.srO_DESC}
+                        </option>`
+                    );
+                });
+                $sroSchedule.trigger('change.select2');
+            },
+            error: function(xhr) {
+                console.error("Error loading SRO schedules:", xhr.responseText);
+            }
+        });
+    });
+
+    // When SRO Schedule changes, load SRO Items
+    $('#sroScheduleNo').on('change', function () {
+        let sroId = $(this).val();
+        let invoiceId = "{{ invoice.id }}";
+        if (!sroId) return;
+
+        $.ajax({
+            url: "{% url 'get_sro_items' %}",
+            data: { sro_id: sroId, invoiceId: invoiceId },
+            success: function (data) {
+                let $sroItem = $('#sroItemSerialNo');
+                $sroItem.empty().append('<option value="">Select SRO Item</option>');
+                data.forEach(item => {
+                    $sroItem.append(
+                        `<option value="${item.srO_ITEM_DESC}">
+                            ${item.srO_ITEM_ID} - ${item.srO_ITEM_DESC}
+                        </option>`
+                    );
+                });
+                $sroItem.trigger('change.select2');
+            },
+            error: function(xhr) {
+                console.error("Error loading SRO Items:", xhr.responseText);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock main %}

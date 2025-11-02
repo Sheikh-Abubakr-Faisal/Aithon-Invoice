@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="container form-container mt-5 mb-5 card shadow-lg">
+        <div>
+            <form method='POST' action="">
+                {% csrf_token %}
+                <div class="row container mb-5 mt-4">
+                    <h1 class="mt-2 mb-3">Sale Invoice</h1>
+                    <hr>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                        {% endif %}
+
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                        <label for="invoice_number" class="form-label">Invoice Number</label>
+                        <input type="text" class="form-control" id="invoice_number" name="invoice_number" required>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" name="date" required>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                    <label for="doc_type" class="form-label">Document Type</label>
+                    <select name="doc_type_id" id="doc_type" class="form-control" required onchange="setDocTypeDescription()">
+                        <option value="">Select Document Type</option>
+                        {% for doc in document_types %}
+                            <option value="{{ doc.docTypeId }}" data-description="{{ doc.docDescription }}">
+                                {{ doc.docDescription }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <!-- Hidden field to store doc description -->
+                    <input type="hidden" name="doc_type_description" id="doc_type_description">
+                </div>
+                    <h2 class="mb-3">Client Details</h2>
+                    <hr>
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                        <label for="buyer_name" class="form-label">Name</label>
+                        <select name="buyer" id="buyer" class="form-control" required>
+                        <option value="">Select Buyer</option>
+                        {% for client in clients %}
+                            <option value="{{ client.id }}"
+                                data-registration="{{ client.registration_type }}"
+                                data-ntn="{{ client.ntn }}"
+                                data-address="{{ client.address }}"
+                                data-province="{{ client.province_name }}">
+                                {{ client.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                        <label for="buyer_registration_type" class="form-label">Registration Type</label>
+                        <input type="text" class="form-control" id="buyer_registration_type" name="buyer_registration_type" readonly>
+                    </div>
+
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                        <label for="buyer_ntn" class="form-label">NTN/CNIC</label>
+                        <input type="text" class="form-control" id="buyer_ntn" name="buyer_ntn" readonly>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
+                        <label for="province" class="form-label">Province</label>
+                        <input type="text" class="form-control" id="province" name="province_name" readonly>
+                    </div>
+                    <div class="mb-3 col-lg-8 col-md-8 col-sm-12">
+                        <label for="buyer_address" class="form-label">Address</label>
+                        <textarea class="form-control" id="buyer_address" name="buyer_address" readonly></textarea>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Create Sale Invoice</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+<script>
+function setDocTypeDescription() {
+    let dropdown = document.getElementById("doc_type");
+    let selectedOption = dropdown.options[dropdown.selectedIndex];
+    document.getElementById("doc_type_description").value = selectedOption.getAttribute("data-description");
+}
+
+function setDocTypeDescription() {
+    let dropdown = document.getElementById("doc_type");
+    let selectedOption = dropdown.options[dropdown.selectedIndex];
+    document.getElementById("doc_type_description").value = selectedOption.getAttribute("data-description");
+}
+
+// Auto-fill buyer info when selected
+document.getElementById("buyer").addEventListener("change", function() {
+    let selected = this.options[this.selectedIndex];
+    document.getElementById("buyer_registration_type").value = selected.getAttribute("data-registration") || "";
+    document.getElementById("buyer_ntn").value = selected.getAttribute("data-ntn") || "";
+    document.getElementById("buyer_address").value = selected.getAttribute("data-address") || "";
+    document.getElementById("province").value = selected.getAttribute("data-province") || "";
+});
+
+</script>
+
+{% endblock main %}

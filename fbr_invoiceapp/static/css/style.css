@@ -1,0 +1,121 @@
+.hero-header, .para-hero {
+    color: #000000;
+    font-family: 'Arial', sans-serif;
+}
+
+.hero-header {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.para-hero {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.btn-hero {
+    background-color: #24c803;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-hero:hover {
+    background-color: #1e9e03;
+}
+
+.img-about, .img-contact {
+    border-radius: 10px;
+}
+
+.about-header, .para-about {
+    color: #000000;
+    font-family: 'Arial', sans-serif;
+}
+
+.about-header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.para-about {
+    font-size: 22px;
+    margin-top: 50px;
+}
+
+.work_header {
+    font-size: 36px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.work_icon {
+    font-size: 75px;
+    color: #24c803;
+}
+
+.work_text {
+    font-size: 18px;
+}
+
+.price_header {
+    font-size: 32px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.price_text {
+    font-size: 22px;
+    margin-top: 10px;
+}
+
+.price {
+    background-image: url('../img/pic04.png');
+    background-size: cover;
+    background-position: center;
+    padding: 50px 0;
+}
+
+.contact_header {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.contact_text {
+    font-size: 20px;
+}
+
+.contact_whatsapp, .contact_email{
+    text-decoration: none;
+    font-size: 30px;
+    color: #000000;
+    cursor: pointer;
+}
+
+.contact_icon_whatsapp {
+    font-size: 40px;
+    color: #25D366;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.contact_icon_whatsapp:hover, .contact_whatsapp:hover {
+    color: #25D366;
+}
+
+.contact_icon_email {
+    font-size: 40px;
+    color: #EA4335;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.contact_email:hover, .contact_icon_email:hover {
+    color: #EA4335;
+}

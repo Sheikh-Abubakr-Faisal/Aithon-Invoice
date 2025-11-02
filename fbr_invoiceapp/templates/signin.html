@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block main %}
+{% load static %}
+<div class="container mt-5">
+<div class="container mt-5 col-lg-6 col-md-8 col-sm-10 col-xs-6 card shadow-lg">
+  <h2 class="fw-bold mt-4">Sign In</h2>
+  <hr>
+       {% if messages %} {{ message.tags }}
+                <div class="alert alert-primary" role="alert">
+                {% for message in messages %} {{ message }} {% endfor %}
+                </div>
+                {% endif %}
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+  <div class="mb-3 mt-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+  </div>
+  <button type="submit" class="btn mt-3 mb-2 fw-semibold" style="width:60%; margin-left:20%; background-color:rgba(39, 198, 18, 1); color: white;">Sign in</button>
+</form>
+</div>
+</div>
+
+{% endblock main %}

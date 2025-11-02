@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<link rel="stylesheet" href="{% static 'css/all_sale_invoice.css' %}">
+<style>
+    .modal-content {
+  border-radius: 1rem;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+</style>
+    <div class="container mb-5">
+        <div class="row mb-5">
+            <h1 class="col-lg-12 col-md-12 col-sm-12 text-center mt-5">All Clients</h1>
+            <div class="col-lg-12 col-md-12 col-sm-12 text-center mt-5">
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request.GET.search }}">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+            </div>
+            <div class="row col-lg-12">
+            <div class="col-lg-10 col-md-12 col-sm-12 col-12 mt-5"><h5>Total Clients: <b>{{ total_clients }}</b></h5>
+            </div>
+            <a href="{% url 'client_create' %}" class="col-lg-2 mt-5 text-end" style="font-size: 20px;"><i class="bi bi-plus-square-fill"></i></a>
+        </div>
+            <hr>
+            {% if messages %} {{ message.tags }}
+                <div class="alert alert-primary" role="alert">
+                {% for message in messages %} {{ message }} {% endfor %}
+                </div>
+                {% endif %}
+            {% for client in clients %}
+            <div class="card col-lg-11 mx-auto m-4">
+                <div class="row card-body">
+                    <div class="row col-lg-12">
+                        <div class="col-lg-12 card-header mb-3"><h5><strong>Name:</strong> {{client.name}}</h5></div>
+                        <div class="col-lg-3"><strong>NTN/CNIC:</strong> {{client.ntn}}</div>
+                        <div class="col-lg-3"><strong>Province:</strong> {{client.province_name}}</div>
+                        <div class="col-lg-3"><strong>Reg. Type:</strong> {{client.registration_type}}</div>
+                        <div class="col-lg-3"><strong>Client Type:</strong> {{client.client_type}}</div>
+                    </div>
+                    <div class="row col-lg-12">
+                        <div class="col-lg-12 mt-2"><strong>Address:</strong> {{client.address}}</div>
+                    </div>
+                </div>
+
+                    <div class="row col-lg-12">
+                        <a href="{% url 'client_edit' client.id %}" class="btn btn-success card-link col-lg-1 col-md-5 col-sm-5 col-5 m-2 ms-4 mt-2">Edit</a>
+                        <button 
+    type="button" 
+    class="btn btn-danger card-link col-lg-1 col-md-5 col-sm-5 col-5 m-2 ms-4 mt-2"
+    data-bs-toggle="modal" 
+    data-bs-target="#deleteClientModal{{ client.id }}">
+    Delete
+</button>
+</div>
+<!-- Delete Confirmation Modal for this client -->
+<div class="modal fade" id="deleteClientModal{{ client.id }}" tabindex="-1" aria-labelledby="deleteClientModalLabel{{ client.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-danger text-white rounded-top-4">
+        <h5 class="modal-title" id="deleteClientModalLabel{{ client.id }}">Confirm Deletion</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-3 fs-6">Are you sure you want to delete <strong>{{ client.name }}</strong>?</p>
+        <p class="text-muted small">This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+        <a href="{% url 'client_delete' client.id %}" class="btn btn-danger px-4">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+            </div>
+            {% empty %}
+            <p class="text-center mt-4">No clients found.</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+
+    
+{% endblock main %}

@@ -1,0 +1,396 @@
+{% extends "base.html" %}
+{% block main %}
+
+    <div class="container form-container mt-5 mb-5 card shadow-lg">
+        <div>
+            <form method='POST' action="">
+                {% csrf_token %}
+                <div class="row container mb-5 mt-4">
+                    <h1 class="mt-2 mb-3" >Sale Invoice</h1>
+                    <hr>
+                    {% if messages %} {{ message.tags }}
+                    <div class="alert alert-primary" role="alert">
+                    {% for message in messages %} {{ message }} {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="mb-1 col-lg-6 col-md-6 col-sm-12">
+                        <p><b>Invoice Number:</b> {{ invoice.invoice_number }}</p><hr>
+                    </div>
+                    <div class="mb-1 col-lg-6 col-md-6 col-sm-12">
+                        <p><b>Date:</b> {{ invoice.date }}</p><hr>
+                    </div>
+
+                    <h5 class="mb-3 fw-bold">Client Details</h5>
+                    <hr>
+                    <div class="mb-1 col-lg-4 col-md-4 col-sm-12">
+                        <p><b>Name:</b> {{invoice.buyer.name}}</p><hr>
+                    </div>
+                    <div class="mb-1 col-lg-4 col-md-4 col-sm-12">
+                        <p><b>NTN/CNIC:</b> {{invoice.buyer.ntn}}</p><hr>
+                    </div>
+                    <div class="mb-1 col-lg-4 col-md-4 col-sm-12">
+                        <p><b>Province:</b> {{invoice.buyer.province_name}}</p><hr>
+                    </div>
+                    <div class="mb-1 col-lg-12 col-md-12 col-sm-12">
+                        <p><b>Address:</b> {{ invoice.buyer.address }}</p><hr>
+                    </div>
+
+                    <h4 class="mb-3 fw-bold">Products</h4>
+                    <hr>
+                    <div class="row">
+                        <table class="table col-lg-12 col-md-12 col-sm-12 table-bordered">
+                            <thead>
+                                <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">HS Code</th>
+                                <th scope="col">Product Description</th>
+                                <th scope="col">UOM</th>
+                                <th scope="col">Qty</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col">Total Price</th>
+                                {% if not invoice.is_sent %}
+                                <th scope="col">Actions</th>
+                                {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in item %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ i.product.code }}</td>
+                                    <td>{{ i.product.name }}</td>
+                                    <td>{{ i.product.unit_of_measurement }}</td>
+                                    <td>{{ i.quantity }}</td>
+                                    <td>{{ i.unit_price|floatformat:2 }}</td>
+                                    <td>{{ i.total_price|floatformat:2  }}</td>
+                                    {% if not invoice.is_sent %}
+                                    <td class="text-center">
+                                        <a href="{% url 'sale_inv_product_update' invoice.id i.id %}" class="edit bg-success"><i class="bi bi-pencil-square"></i></a>
+                                        <a href="{% url 'delete_sale_inv_item' i.id  %}" class="del bg-danger"><i class="bi bi-trash3"></i></a>
+                                </td>
+                                {% endif %}
+                                </tr>
+                                {% endfor %}
+                            
+                            </tbody>
+                            </table>
+                        <table class="table col-lg-12 col-md-12 col-sm-12 table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center"><b>Tax Rate:</b> {{ invoice.items.first.rate|floatformat:2 }}%</td>
+                                    <td class="text-center"><b>Withholding Tax:</b> {{ invoice.total_sales_tax_withheld|floatformat:2  }}</td>
+                                    <td class="text-center"><b>Extra Tax:</b> {{ invoice.total_extra_tax|floatformat:2  }}</td>
+                                    <td class="text-center"><b>further Tax:</b> {{ invoice.total_further_tax|floatformat:2  }}</td>
+                                    <td class="text-center"><b>fed Paid:</b> {{ invoice.total_fed_payable|floatformat:2  }}</td>
+                                    <td class="text-center"><b>Discount:</b> {{ invoice.total_discount|floatformat:2  }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center"><b>Subtotal:</b> {{ invoice.subtotal|floatformat:2  }}</td>
+                                    <td colspan="2" class="text-center"><b>Total Tax:</b> {{ invoice.tax_total|floatformat:2 }}</td>
+                                    <td colspan="2" class="text-center"><b>Grand Total:</b> {{ invoice.grand_total|floatformat:2 }}</td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            
+                    </div>
+
+                    {% if not invoice.is_sent %}
+                    <div class="row">   
+                            <hr>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item" class="form-label">Item</label>
+                                <select name="item" id="item" class="form-control" required>
+                                    <option value="" selected>Select Item</option>
+                                    {% for product in products %}
+                                        <option value="{{ product.id }}">{{ product.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_unit_price" class="form-label">Unit Price</label>
+                                <input type="number" class="form-control" name="item_unit_price" id="item_unit_price" value="{{ purchase_item.unit_price|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" name="item_quantity" id="item_quantity" value="{{ purchase_item.item_quantity|default:1 }}">
+                            </div>
+                            <div class="col-lg-12 row">
+                            <Details>
+                            <summary style="font-size: 15px;">More</summary>
+                            <hr> 
+                            <div class="row">
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="rate" class="form-label">Tax Rate</label>
+                                <select name="rate" id="rate" class="form-control" required>
+                                    <option value="">Select Rate</option>
+                                    {% for r in rates %}
+                                        <option value="{{ r.ratE_VALUE }}" data-id="{{ r.ratE_ID }}">
+                                            {{ r.ratE_ID }} - {{ r.ratE_DESC }} ({{ r.ratE_VALUE }}%)
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="rateId" id="rateId">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="retailPrice" class="form-label">Retail Price</label>
+                                <input type="number" class="form-control" name="retailPrice" id="retailPrice" value="{{ sale_item.retailPrice|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="salesTaxWithheldAtSource" class="form-label">Withholding Tax</label>
+                                <input type="number" class="form-control" name="salesTaxWithheldAtSource" id="salesTaxWithheldAtSource" value="{{ purchase_item.withholdingTax|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="extraTax" class="form-label">Extra Tax</label>
+                                <input type="number" class="form-control" name="extraTax" id="extraTax" value="{{ purchase_item.extraTax|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="furtherTax" class="form-label">further Tax</label>
+                                <input type="number" class="form-control" name="furtherTax" id="furtherTax" value="{{ purchase_item.furtherTax|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="fedPayable" class="form-label">fed Paid</label>
+                                <input type="number" class="form-control" name="fedPayable" id="fedPayable" value="{{ purchase_item.fedPaid|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="discount" class="form-label">Discount</label>
+                                <input type="number" class="form-control" name="discount" id="discount" value="{{ purchase_item.discount|default:0 }}">
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="saleType" class="form-label">Transaction Type</label>
+                                <select name="saleType" id="saleType" class="form-control" required>
+                                    <option value="">-- Select Transaction Type --</option>
+                                    {% for tt in transaction_types %}
+                                    <option value="{{ tt.transactioN_TYPE_ID }}" 
+                                            data-desc="{{ tt.transactioN_DESC }}"
+                                            {% if tt.transactioN_TYPE_ID == 75 %}selected{% endif %}>
+                                        {{ tt.transactioN_TYPE_ID }} - {{ tt.transactioN_DESC }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="saleTypeDesc" id="saleTypeDesc">
+                            </div>
+
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="sroScheduleNo" class="form-label">SRO Schedule</label>
+                                <select name="sroScheduleNo" id="sroScheduleNo" class="form-control">
+                                    <option value="">Select SRO Schedule</option>
+                                    {% for sro in sro_schedule %}
+                                        <option value="{{ sro.srO_ID }}" data-desc="{{ sro.srO_DESC }}">
+                                            {{ sro.srO_ID }} - {{ sro.srO_DESC }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="sro_schedule_desc" id="sroScheduleDesc">
+                            </div>
+
+
+                            <div class="mb-3 col-lg-3 col-md-6 mt-1 col-sm-12">
+                                <label for="sroItemSerialNo" class="form-label">SRO Item Serial No.</label>
+                                <select name="sroItemSerialNo" id="sroItemSerialNo" class="form-control">
+                                    <option value="">Select SRO Item</option>
+                                    {% for sro in sro_items %}
+                                        <option value="{{ sro.srO_ITEM_DESC }}">
+                                            {{ sro.srO_ITEM_ID }} - {{ sro.srO_ITEM_DESC }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            </Details>
+                        </div>
+                    </div>
+                            
+                            <div class="col-lg-3 mb-1 mt-4"><button type="submit" name="action" value="add_item" class="btn btn-primary btn-lg">Add Item</button></div>
+                    </div>
+
+                </form>
+                </div>
+                {% endif %}
+                        <div class="row mb-5">
+                            <!-- Always show -->
+                        <a class="btn btn-success mx-auto card-link col-lg-2 col-md-3 col-sm-3 col-5" href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-primary">Save PDF</a>
+                        <a class="btn btn-success mx-auto card-link col-lg-2 col-md-3 col-sm-3 col-5" href="#" class="btn btn-info">View</a>
+
+                        {% if not invoice.is_sent %}
+                            <!-- Only before sending -->
+                            <form action="{% url 'post_sale_invoice' invoice.id %}" method="post" class="col-lg-2 row">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success mx-auto card-link col-lg-12 col-md-3 col-sm-3 col-5">Send to FBR</button>
+                            </form>
+                            <a class="btn btn-success mx-auto card-link col-lg-2 col-md-3 col-sm-3 col-5" href="#" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                                                </div>
+        </div>
+    </div>
+
+<script>
+$(document).ready(function() {
+    // Initialize selects with Select2
+    $('#item, #sroItemSerialNo, #saleType, #sroScheduleNo, #rate').select2({
+        theme: "bootstrap-5",
+        placeholder: "Select option",
+        allowClear: true,
+        width: '100%'
+    });
+
+    if ($('#rate option').length > 1 && !$('#rate').val()) {
+        // Select the first valid option (skip the "Select Rate" one)
+        let firstOption = $('#rate option:eq(1)');
+        $('#rate').val(firstOption.val()).trigger('change.select2');
+        $('#rateId').val(firstOption.data('id'));
+    }
+
+    // Sync Select2 with initial values
+    if ($('#rate').val()) {
+        $('#rate').trigger('change.select2');
+    }
+    if ($('#saleType').val()) {
+        $('#saleType').trigger('change');
+    }
+
+    // Save SRO Item description to hidden input
+    $('#sroItemSerialNo').on('change', function() {
+        let selectedOption = $(this).find(':selected');
+        $('#sroItemDesc').val(selectedOption.data('desc'));
+    });
+
+    // Save SRO Schedule description to hidden input
+    $('#sroScheduleNo').on('change', function() {
+        let selectedOption = $(this).find(':selected');
+        $('#sroScheduleDesc').val(selectedOption.data('desc'));
+    });
+
+    $('#saleType').on('change', function () {
+        let transId = $(this).val(); // numeric ID
+        let transDesc = $(this).find(':selected').data('desc'); // description
+        let invoiceId = "{{ invoice.id }}";   
+        if (!transId || !invoiceId) return;
+
+        // Save description in hidden input for sending to FBR
+        $('#saleTypeDesc').val(transDesc);
+
+        // Fetch rates via AJAX
+        $.ajax({
+            url: "{% url 'get_rates' %}",
+            data: { transTypeId: transId, invoiceId: invoiceId },
+            success: function (data) {
+                let $rate = $('#rate');
+                $rate.empty().append('<option value="">Select Rate</option>');
+                data.forEach(r => {
+                    $rate.append(
+                        `<option value="${r.ratE_VALUE}" data-id="${r.ratE_ID}">
+                            ${r.ratE_ID} - ${r.ratE_DESC} (${r.ratE_VALUE}%)
+                        </option>`
+                    );
+                });
+                $rate.trigger('change.select2');
+                // if(data.length > 0) $rate.val(data[0].ratE_VALUE).trigger('change.select2');
+            },
+            error: function(xhr) {
+                console.error("Error loading rates:", xhr.responseText);
+            }
+        });
+    });
+
+    // --- AJAX: when rate changes, fetch SRO schedules ---
+    $('#rate').on('select2:select', function () {
+        let rateId = $(this).find(":selected").data("id");
+        $('#rateId').val(rateId); // store in hidden field
+
+        let invoiceId = "{{ invoice.id }}";
+        if (!rateId || !invoiceId) return;
+
+        $.ajax({
+            url: "{% url 'get_sro_schedule' %}",
+            data: { rateId: rateId, invoiceId: invoiceId },
+            success: function (data) {
+                console.log("SRO schedule:", data); // debug
+                let $sroSchedule = $('#sroScheduleNo');
+                $sroSchedule.empty().append('<option value="">Select SRO Schedule</option>');
+
+                // Adjust if API returns nested object
+                let schedules = Array.isArray(data) ? data : data.SroSchedule || [];
+                schedules.forEach(sro => {
+                    $sroSchedule.append(
+                        `<option value="${sro.srO_ID}" data-desc="${sro.srO_DESC}">
+                            ${sro.srO_ID} - ${sro.srO_DESC}
+                        </option>`
+                    );
+                });
+                $sroSchedule.trigger('change.select2');
+            },
+            error: function(xhr) {
+                console.error("Error loading SRO schedules:", xhr.responseText);
+            }
+        });
+    });
+
+    // --- AJAX: when SRO Schedule changes, fetch SRO items ---
+    $('#sroScheduleNo').on('change', function () {
+        let sroId = $(this).val();
+        let invoiceId = "{{ invoice.id }}";
+        if (!sroId) return;
+
+        $.ajax({
+            url: "{% url 'get_sro_items' %}",
+            data: { sro_id: sroId, invoiceId: invoiceId },
+            success: function (data) {
+                let $sroItem = $('#sroItemSerialNo');
+                $sroItem.empty().append('<option value="">Select SRO Item</option>');
+                data.forEach(item => {
+                    $sroItem.append(
+                        `<option value="${item.srO_ITEM_DESC}">
+                            ${item.srO_ITEM_ID} - ${item.srO_ITEM_DESC}
+                        </option>`
+                    );
+                });
+                $sroItem.trigger('change.select2'); // refresh Select2
+            },
+            error: function(xhr) {
+                console.error("Error loading SRO Items:", xhr.responseText);
+            }
+        });
+    });
+
+    // --- Send to FBR AJAX ---
+    $('#sendToFbrBtn').click(function () {
+        $.ajax({
+            url: "{% url 'post_sale_invoice' invoice.id %}",
+            type: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            success: function (response) {
+                alert("✅ Sent to FBR!\n\nStatus: " + response.status_code + 
+                      "\nMessage: " + JSON.stringify(response.fbr_response, null, 2));
+            },
+            error: function (xhr) {
+                let errorMsg = "❌ Error sending invoice!";
+                try {
+                    let json = JSON.parse(xhr.responseText);
+                    if (json.error) errorMsg += "\n" + json.error;
+                } catch (e) { errorMsg += "\n" + xhr.responseText; }
+                alert(errorMsg);
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    let saleTypeSelect = document.querySelector("select[name='saleType']");
+    let saleTypeDescInput = document.getElementById("saleTypeDesc");
+
+    saleTypeSelect.addEventListener("change", function() {
+        let selectedOption = this.options[this.selectedIndex];
+        saleTypeDescInput.value = selectedOption.dataset.desc;  // set description
+    });
+
+    // trigger once on load (if editing)
+    if (saleTypeSelect.value) {
+        let selectedOption = saleTypeSelect.options[saleTypeSelect.selectedIndex];
+        saleTypeDescInput.value = selectedOption.dataset.desc;
+    }
+});
+</script>
+
+
+
+{% endblock main %}

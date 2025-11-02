@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Michroma&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+.navbar {
+    background-color: rgb(238, 238, 238) !important;
+}
+
+.navbar-brand {
+    font-size: 20px;
+    font-family: "Luckiest Guy", cursive;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item {
+    font-size: 15px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    margin-left: 10px;
+}
+
+.nav-link {
+    color: black;
+}
+
+.nav-link:hover {
+    color: rgb(25, 165, 6);
+}
+
+.log_icon {
+    font-size: 20px;
+    color: green;
+}

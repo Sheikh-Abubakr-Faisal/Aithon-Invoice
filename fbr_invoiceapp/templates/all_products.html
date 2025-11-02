@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block main %}
+{% load static %}
+<link rel="stylesheet" href="{% static "css/category.css" %}">
+    <div class="container form-container mt-5 mb-5 card shadow-lg">
+        <div>
+                <div class="row container mb-5 mt-4">
+                    <h1 class="col-lg-6 col-md-6 col-sm-12 mt-2 mb-3">{% if product %}Update Product{% else %}Products{% endif %}</h1>
+                    
+                    {% if not product %}
+                    <div class="col-lg-6 col-md-6 col-sm-12 mx-auto mb-4">
+                        <form action="" method="GET">
+                            <div class="d-flex mt-3" role="search">
+                                <input class="form-control me-2" value="{{ request.GET.search }}" name="search" type="search" placeholder="Search" aria-label="Search"/>
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    {% if messages %} {{ message.tags }}
+                <div class="alert alert-primary" role="alert">
+                {% for message in messages %} {{ message }} {% endfor %}
+                </div>
+                {% endif %}
+                {% if not product %}
+                    <div class="row">
+                        <table class="table col-lg-12 col-md-12 col-sm-12 table-bordered">
+                            <thead>
+                                <tr>
+                                <th scope="col">SR#</th>
+                                <th scope="col">HS Code</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">UOM</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{product.code}}</td>
+                                <td>{{product.name}}</td>
+                                <td>{{product.unit_of_measurement}}</td>
+                                <td>{{product.unit_price}}</td>
+                                <td class="text-center">
+
+                                    <a href="{% url "update_product" product.id %}" class="edit bg-success"><i class="bi bi-pencil-square"></i></a>
+
+                                    <a href="{% url "del_product" product.id %}" class="del bg-danger"><i class="bi bi-trash3"></i></a>
+                                </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
+                    </div>
+                {% endif %}
+                    <form method='POST' action="">
+                    {% csrf_token %}
+                    <div class="row">    
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_code" class="form-label">HS Code</label>
+
+                                <select name="item_code" id="item_code" class="form-control" {% if product %}disabled{% endif %}>
+                                    <option value="">Select HS Code</option>
+                                    {% for hs in hs_codes %}
+                                        <option value="{{ hs.hS_CODE }}" {% if product.code == hs.hS_CODE %}selected{% endif %}>
+                                            {{ hs.hS_CODE }} - {{ hs.description }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                {% if product %}
+                                    <!-- keep hidden so value still posts -->
+                                    <input type="hidden" name="item_code" value="{{ product.code }}">
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_name" class="form-label">Product Description</label>
+                                <input type="text" class="form-control" value="{{ product.name }}" name="item_name" id="item_name" required>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_category" class="form-label">Category</label>
+                                <select name="item_category" id="item_category" class="form-control">
+                                    <option name="item_category" value="" selected>Select Category</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_uom" class="form-label">UOM</label>
+                                <select name="item_uom" id="item_uom" class="form-control">
+                                    <option value="">Select UOM</option>
+                                    {% for uom in uoms %}
+                                    <option value="{{ uom.description }}" 
+                                        {% if product.unit_of_measurement == uom.description %}selected{% endif %}>
+                                        {{ uom.description }}
+                                    </option>
+                                {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="item_unit_price" class="form-label">Unit Price</label>
+                                <input type="number" name="item_unit_price" class="form-control" value="{{ product.unit_price }}" id="item_unit_price" required>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6 mt-1 col-sm-12">
+                                <label for="product_type" class="form-label">Product Type</label>
+                                <select name="product_type" class="form-select" required>
+                                    <option value="good" {% if product and product.product_type == 'good' %}selected{% endif %}>Good</option>
+                                    <option value="service" {% if product and product.product_type == 'service' %}selected{% endif %}>Service</option>
+                                </select>
+                            </div>
+
+                            <div class="col-lg-3 mb-1 mt-4"><button type="submit" class="btn btn-lg {% if product %}btn-success{% else %}btn-primary{% endif %}" >
+                                {% if product %}Update Item{% else %}Add Item{% endif %}
+                            </button></div>
+                            
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+$(document).ready(function() {
+    $('#item_code').select2({
+        theme: "bootstrap-5",
+        placeholder: "Search or Select HS Code",
+        allowClear: true
+    });
+
+    $('#item_category').select2({
+        theme: "bootstrap-5",
+        placeholder: "Search or Select Category",
+        allowClear: true
+    });
+
+    $('#item_uom').select2({
+        theme: "bootstrap-5",
+        placeholder: "Search or Select UOM",
+        allowClear: true
+    });
+
+    // --- helper function to load UOMs via AJAX ---
+    function loadUoms(hsCode, selectedUom) {
+        $.ajax({
+            url: "{% url 'fetch_uom' %}",
+            type: "GET",
+            data: { hs_code: hsCode },
+            success: function(data) {
+                let uomDropdown = $('#item_uom');
+                uomDropdown.empty().append('<option value="">Select UOM</option>');
+                $.each(data, function(index, item) {
+                    let selected = (item.description === selectedUom) ? 'selected' : '';
+                    uomDropdown.append(
+                        $('<option>', { value: item.description, text: item.description, selected: selected })
+                    );
+                });
+                uomDropdown.trigger('change'); // refresh select2
+            },
+            error: function(xhr) {
+                alert("Failed to fetch UOMs: " + xhr.responseText);
+            }
+        });
+    }
+
+    // --- On page load → fetch UOMs for already selected HS Code ---
+    let initialHsCode = $('#item_code').val();   // current HS code
+    let initialUom = "{{ product.unit_of_measurement }}"; // match your model field
+    if (initialHsCode) {
+        loadUoms(initialHsCode, initialUom);
+    }
+
+    // --- When HS Code changes → fetch UOMs dynamically ---
+    $('#item_code').on('change', function() {
+        loadUoms($(this).val(), null);
+    });
+});
+</script>
+
+
+{% endblock main %}

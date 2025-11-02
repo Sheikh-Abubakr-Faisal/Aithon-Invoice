@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block main %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/company_details.css' %}">
+
+<div class="container mb-5">
+    <div class=" row">
+        <div class="col-lg-12 col-md-12 col-sm-12 text-center mt-5"><h1>Company Information</h1></div>
+        <div class="col-lg-12 col-md-12 col-sm-12 card shadow-lg mt-5 pb-2">
+            <h2 class="card-header fw-bold mb-3">Company Details</h2>
+            <h6><b>Name:</b> {{ company_info.name }}</h6>
+            <h6><b>Address:</b> {{ company_info.address }}</h6>
+            <h6><b>STRN:</b> {{ company_info.strn }}</h6>
+            <h6><b>NTN:</b> {{ company_info.ntn }}</h6>
+            <h6><b>Phone:</b> {{ company_info.phone }}</h6>
+            <h6><b>Email:</b> {{ company_info.email }}</h6>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

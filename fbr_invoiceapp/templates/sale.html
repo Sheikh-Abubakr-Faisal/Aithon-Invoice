@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<link rel="stylesheet" href="{% static 'css/all_sale_invoice.css' %}">
+    <div class="container mb-5">
+        <div class="row mb-5">
+            <h1 class="col-lg-12 col-md-12 col-sm-12 text-center mt-5">All Sale Invoices</h1>
+            <div class="col-lg-12 col-md-12 col-sm-12 text-center mt-5">
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request.GET.search }}">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12 mt-5"><h5>Total Sale Invoices: <b>{{ invoice_count }}</b></h5></div><hr>
+
+            {% for data in invoice_data %}
+            <div class="card col-lg-11 mx-auto m-4">
+                <div class="row card-body">
+                    <h5 class="card-title col-lg-9 col-md-9 col-sm-8 col-7">Invoive No. <b class="text-primary">{{ data.invoice_number }}</b></h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary text-end col-lg-3 col-md-3 col-sm-4 mt-1 col-5">Date: {{ data.date }}</h6><hr>
+                    <h6 class="card-subtitle"><b class="text-success">Buyer Details</b></h6>
+                    <p class="card-text col-lg-4 col-md-4 col-sm-4 col-4"><b>Name:</b> {{ data.buyer_name }}</p>
+                    <p class="card-text col-lg-4 col-md-4 col-sm-4 col-4"><b>NTN/CNIC:</b> {{ data.buyer_ntn }}</p>
+                    <p class="card-text col-lg-4 col-md-4 col-sm-4 col-4"><b>Province:</b> {{ data.province }}</p>
+                    <p class="card-text col-lg-12 col-md-12 col-sm-12 col-12"><b>Address:</b> {{ data.buyer_address }}</p>
+
+                    <h6 class="card-subtitle"><b class="text-success">Items</b></h6>
+
+                    <div class="row mt-2">
+                        <table class="table col-lg-12 col-md-12 col-sm-12 col-12 table-bordered">
+                            <thead>
+                                <tr>
+                                <th scope="col">SR#</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Product Description</th>
+                                <th scope="col">UOM</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Unit Price</th>
+                                <th scope="col">Total Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in data.items %}
+                                <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ row.code }}</td>
+                                <td>{{ row.product }}</td>
+                                <td>{{ row.unit_of_measurement }}</td>
+                                <td>{{ row.quantity|floatformat:2 }}</td>
+                                <td>{{ row.unit_price|floatformat:2 }}</td>
+                                <td>{{ row.total|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                            </table>
+                    </div>
+
+                    
+                        <table class="table col-lg-12 col-md-12 col-sm-12 table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td class="text-center"><b>Tax Rate:</b> {{ data.tax_rate }}%</td>
+                                    <td class="text-center"><b>Withholding Tax:</b> {{ data.total_sales_tax_withheld|floatformat:2  }}</td>
+                                    <td class="text-center"><b>Extra Tax:</b> {{ data.total_extra_tax|floatformat:2  }}</td>
+                                    <td class="text-center"><b>further Tax:</b> {{ data.total_further_tax|floatformat:2  }}</td>
+                                    <td class="text-center"><b>fed Payable:</b> {{ data.total_fed_payable|floatformat:2  }}</td>
+                                    <td class="text-center"><b>Discount:</b> {{ data.total_discount|floatformat:2  }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-center"><b>Subtotal:</b> {{ data.subtotal|floatformat:2  }}</td>
+                                    <td colspan="2" class="text-center"><b>Total Tax:</b> {{ data.tax_total|floatformat:2 }}</td>
+                                    <td colspan="2" class="text-center"><b>Grand Total:</b> {{ data.grand_total|floatformat:2 }}</td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            
+                </div>
+
+                  <div class="row">
+                        <a href="{% url 'invoice_view' data.id %}" class="btn btn-secondary mx-auto card-link col-lg-5 col-md-5 col-sm-5 col-5 m-2">View</a>
+                        <a href="{% url 'invoice_pdf' data.id %}" class="btn btn-success mx-auto card-link col-lg-5 col-md-5 col-sm-5 col-5 m-2">Save as PDF</a>
+                        </div>
+            </div>
+            {% endfor %}
+            
+        </div>
+    </div>
+    
+    
+{% endblock main %}

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Michroma&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CDN - css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+
+    <!-- Bootstrap icon -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+     <link rel="stylesheet" href="{% static 'css/invoice_pdf_css.css' %}">
+     <link rel="stylesheet" href="{% static 'bs/css/bootstrap.min.css' %}">
+</head>
+<body>
+    <div class="container">
+    {% if messages %} {{ message.tags }}
+        <div class="alert alert-primary" role="alert">
+    {% for message in messages %} {{ message }} {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+    <div class="page">
+    <div class="container">
+        <div class="row container">
+            <div class="company-detail col-lg-12 row">
+                <div class="col-lg-8 row">
+                    <!-- <div class="mb-2"><img src="{% static 'img/logo-wbg.png' %}" alt="" style="height: 40px;"></div> -->
+                    <div class="col-lg-12 mb-1"><p  style='font-size: 40px; font-family: "Montserrat", "Raleway", sans-serif;'><strong>{{ company_info.name }}</strong></p></div>
+                    <div class="col-lg-12"><p><strong>Address:</strong> {{ company_info.address }}</p></div>
+                    <div class="col-lg-6"><p><strong>NTN:</strong> {{ company_info.ntn }}</p></div>
+                    <div class="col-lg-6"><p><strong>Phone:</strong> {{ company_info.phone }}</p></div>
+                    <div class="col-lg-12"><p><strong>Email:</strong> {{ company_info.email }}</p></div>
+                </div>
+                <div class="col-lg-4 text-end row">
+                    <div class="col-lg-12"><p style='font-size: 20px; font-family: "Montserrat", "Raleway", sans-serif;'><strong>Sale Tax Invoice</strong></p></div>
+                    <!-- <p class="col-lg-12 inv_no"><strong>Invoice No:</strong> 687658758675658{{ invoice.invoice_number }}</p>
+                    <p class="col-lg-12"><strong>Invoice Date:</strong> {{ invoice.date }}</p> -->
+                    {% if invoice.is_sent %}
+                    <div><img src="{% static 'img/digital_invoicing_logo.png' %}" alt="" style="height: 100px;"></div>
+                    {% endif %}
+                    
+                </div>
+            </div>
+            <div class="invoice-detail col-lg-12 row">
+                <div class="col-lg-12 row">
+                    <table class="table mt-2 mb-1" style="width:100%; table-layout: fixed;">
+                        <tr>
+                            <td style="width: 65%;">
+                                <strong>Invoice No.:</strong> {{ invoice.invoice_number }}
+                            </td>
+                            <td style="width: 35%;">
+                                <strong>Invoice Date:</strong> {{ invoice.date }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>FBR Inv. No:</strong> {{ invoice.fbr_invoice_number|default:"—" }}
+                            </td>
+                            <td>
+                                <strong>Transaction Type:</strong> {{ invoice.doc_type_description }}
+                            </td>
+                        </tr>
+                    </table>
+                    <h5 class="col-lg-12 mb-0"><strong>Client Details</strong></h5>
+                    <table class="table m-0 p-0" style="width:100%; table-layout: fixed;">
+                        <tr>
+                            <td style="width:75%;">
+                                <strong>Name:</strong> {{ invoice.buyer.name }} <br>
+                            </td>
+                            <td style="width:30%;">
+                                <strong>Province:</strong> {{ invoice.buyer.province_name }}<br>
+                            </td>
+                        </tr>
+                            <tr>
+                            <td colspan="2" style="width:100%;">
+                                <strong>Address:</strong> {{ invoice.buyer.address }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NTN/CNIC:</strong> {{ invoice.buyer.ntn }}</td>
+                            <td>
+                                <strong>Reg. Type:</strong> {{ invoice.buyer.registration_type }}
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <table class="table table-bordered" style="width:100%; table-layout: fixed;">
+                    <thead>
+                        <tr>
+                        <th scope="col" style="width:3%;">#</th>
+                        <th scope="col" style="width:12%;">HS Code</th>
+                        <th scope="col" style="width:36%;">Product Description</th>
+                        <th scope="col" style="width:12%;">Qty</th>
+                        <th scope="col" style="width:10%;">UOM</th>
+                        <th scope="col" style="width:14%;">Unit Price</th>
+                        <th scope="col" style="width:14%;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ item.product.code }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.product.unit_of_measurement }}</td>
+                        <td>{{ item.unit_price|floatformat:2 }}</td>
+                        <td>{{ item.total_price|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tr>
+                    </tbody>
+                    </table>
+                    <table class="table" style="width:100%; table-layout: fixed;">
+                        <tr>
+                            <td style="width: 25%;"><strong>Tax rate:</strong> {{ items.first.rate|floatformat:2 }}% </td>
+                            <td style="width: 25%;"><strong>Total Tax:</strong> {{ invoice.tax_total|floatformat:2 }} </td>
+                            <td style="width: 25%;"><strong>Extra Tax:</strong> {{ invoice.total_extra_tax|floatformat:2 }} </td>
+                            <td style="width: 25%;"><strong>Further Tax:</strong> {{ invoice.total_further_tax|floatformat:2 }} </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Discount:</strong> {{ invoice.total_discount|floatformat:2 }} </td>
+                            <td><strong>Fed:</strong> {{ invoice.total_fed_payable|floatformat:2 }} </td>
+                            <td colspan="2" class="text-center"><strong>Grand Total:</strong> {{ invoice.grand_total|floatformat:2 }} </td>
+                            
+                        </tr>
+                        <tr>
+                            <td colspan="4"><strong>In Words:</strong> {{ invoice.amount_in_words }}</td>
+                        </tr>
+                    </table>
+            </div>
+            {% if invoice.qr_code %}
+    <div class="text-center col-lg-3">
+        <img src="{{ invoice.qr_code.url }}" alt="QR Code" style="width:1in; height:1in; object-fit:contain;">
+        <p class="text-muted small">Scan to verify invoice on FBR</p>
+    </div>
+{% endif %}
+        </div>
+    </div>
+
+    </div>
+{% endblock main %}
