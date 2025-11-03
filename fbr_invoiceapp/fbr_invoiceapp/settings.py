@@ -9,9 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0'
-import os
-SECRET_KEY = os.environ.get('SECRET_KEY')
+# SECRET_KEY = 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0')
+
+# import os
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -44,13 +46,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
 ]
 
 ROOT_URLCONF = 'fbr_invoiceapp.urls'
@@ -170,6 +172,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Prepearing app for render deployment
 import os
 
-ALLOWED_HOSTS = ['aithon-invoice.onrender.com']  # or ['your-render-app-name.onrender.com']
+# ALLOWED_HOSTS = ['aithon-invoice.onrender.com']  # or ['your-render-app-name.onrender.com']
 # DEBUG = False
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
