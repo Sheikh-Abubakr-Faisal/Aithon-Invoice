@@ -154,3 +154,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Prepearing app for render deployment
+import os
+
+ALLOWED_HOSTS = ['aithon-invoice.onrender.com']  # or ['your-render-app-name.onrender.com']
+DEBUG = False
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

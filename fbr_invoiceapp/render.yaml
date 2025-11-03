@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: aithon-invoice
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn fbr_invoiceapp.wsgi:application"
