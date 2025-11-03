@@ -10,11 +10,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0'
+import os
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['aithon-invoice.onrender.com']
 
 
 # Application definition
