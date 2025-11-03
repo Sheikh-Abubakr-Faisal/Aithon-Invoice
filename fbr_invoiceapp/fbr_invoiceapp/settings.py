@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
 ]
 
 ROOT_URLCONF = 'fbr_invoiceapp.urls'
@@ -131,9 +132,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+# Media files (user uploaded)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -144,10 +151,10 @@ AUTH_USER_MODEL = "base.CustomUser"
 
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
 
-import os
+# import os
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'
@@ -164,5 +171,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 import os
 
 ALLOWED_HOSTS = ['aithon-invoice.onrender.com']  # or ['your-render-app-name.onrender.com']
-DEBUG = False
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# DEBUG = False
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
