@@ -80,21 +80,15 @@ WSGI_APPLICATION = 'fbr_invoiceapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aithon_invoice_db',
-        'USER': 'aithon_invoice_user',
-        'PASSWORD': 'aithon@123',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        # 'OPTIONS': {
-        #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        # },
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
-
-
 
 
 # Password validation
