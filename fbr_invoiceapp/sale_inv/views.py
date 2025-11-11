@@ -861,26 +861,25 @@ def invoice_view(request, invoice_id):
     return render(request, "sale_invoice_fbr.html", context)
 
 def generate_invoice_qr(invoice):
+    verification_url = f"https://aithon-invoice.onrender.com/verify/{invoice.invoice_number}/"
 
-    verification_url = f"https://einv.fbr.gov.pk/InvoiceVerification?invoiceNumber={invoice.fbr_invoice_number}"
-
-    qr = qrcode.QRCode(
-        version=2,  # QR Code Version 2.0 → 25x25 modules
-        box_size=10,  # controls image pixel size (we’ll control inch size later)
-        border=4
-    )
-
+    qr = qrcode.QRCode(version=2, box_size=10, border=4)
     qr.add_data(verification_url)
     qr.make(fit=True)
-
     img = qr.make_image(fill_color="black", back_color="white")
 
-    # Save it to the model (optional)
     buffer = BytesIO()
     img.save(buffer, format="PNG")
-    filename = f"invoice_qr_{invoice.id}.png"
+    filename = f"invoice_qr_{invoice.invoice_number}.png"
     invoice.qr_code.save(filename, ContentFile(buffer.getvalue()), save=True)
-    print(f"✅ QR saved: {invoice.qr_code.path}")
-    print("QR Verification URL:", verification_url)
+
+def verify_invoice(request, invoice_number):
+    try:
+        invoice = SaleInvoice.objects.get(invoice_number=invoice_number)
+    except SaleInvoice.DoesNotExist:
+        return render(request, 'invalid_invoice.html', status=404)
+
+    return render(request, 'qr_verification.html', {'invoice': invoice})
+
 
 
