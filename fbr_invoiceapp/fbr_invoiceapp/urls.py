@@ -3,6 +3,7 @@ from django.urls import path, include
 from base.views import *
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,6 +19,8 @@ urlpatterns = [
     path('', include('stock.urls')),
     path('', include('client.urls')),
     path('', include('contact.urls')),
+
+    path('media/<path:path>/', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
 if settings.DEBUG:
