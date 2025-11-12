@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,10 +75,10 @@
 
             <div class="invoice-details">
                 <p><strong>Invoice #:</strong> {{ invoice.invoice_number }}</p>
-                <!-- <p><strong>Company:</strong> {{ company_info.name }}</p> -->
+                <p><strong>Company:</strong> {{ company_info.name }}</p>
                 <p><strong>Buyer:</strong> {{ invoice.buyer.name }}</p>
                 <p><strong>Date:</strong> {{ invoice.date }}</p>
-                <!-- <p><strong>Grand Total:</strong> Rs. {{ grand_total|floatformat:2 }}</p> -->
+                <p><strong>Grand Total:</strong> Rs. {{ grand_total|floatformat:2 }}</p> 
                 <p><strong>FBR IRN:</strong> {{ invoice.fbr_invoice_number|default:"—" }}</p>
             </div>
 
@@ -88,4 +88,6 @@
         </div>
     </div>
 </body>
-</html>
+</html> -->
+
+<h5>Invoice Verified</h5>
