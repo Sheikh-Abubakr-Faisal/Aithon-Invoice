@@ -18,11 +18,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-e8td@op&zmj_*g=t=z94&
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-# DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# ALLOWED_HOSTS = ['aithon-invoice.onrender.com']
-DEBUG = True
-ALLOWED_HOSTS = ['*']  # Only temporarily
+ALLOWED_HOSTS = ['aithon-invoice.onrender.com']
 
 
 # Application definition
