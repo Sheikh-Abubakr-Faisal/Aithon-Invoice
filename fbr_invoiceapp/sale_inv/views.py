@@ -899,7 +899,7 @@ def verify_invoice(request, invoice_number):
     else:
         print(f"[WARNING] Invoice {invoice_number} has no QR code")
 
-    return render(request, 'qr_verification.html', {'invoice': invoice})
+    return render(request, 'qr_verification.html', {'invoice': invoice, 'grand_total': invoice.grand_total()})
 
 
 

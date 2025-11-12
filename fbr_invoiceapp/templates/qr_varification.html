@@ -78,7 +78,7 @@
                 <p><strong>Company:</strong> {{ company_info.name }}</p>
                 <p><strong>Buyer:</strong> {{ invoice.buyer.name }}</p>
                 <p><strong>Date:</strong> {{ invoice.date }}</p>
-                <p><strong>Grand Total:</strong> Rs. {{ invoice.grand_total|floatformat:2 }}</p>
+                <p><strong>Grand Total:</strong> Rs. {{ grand_total|floatformat:2 }}</p>
                 <p><strong>FBR IRN:</strong> {{ invoice.fbr_invoice_number|default:"—" }}</p>
             </div>
 
