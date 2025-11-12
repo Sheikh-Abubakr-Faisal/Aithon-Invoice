@@ -876,8 +876,7 @@ def generate_invoice_qr(invoice):
 def verify_invoice(request, fbr_invoice_number):
     try:
         print(f"Verifying FBR invoice number: {fbr_invoice_number}")  # Debug log
-        # invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
-        invoice = SaleInvoice.objects.select_related('company', 'buyer').filter(fbr_invoice_number=fbr_invoice_number).first()
+        invoice = SaleInvoice.objects.select_related('company', 'buyer').get(fbr_invoice_number=fbr_invoice_number)
         if not invoice:
             return render(request, 'invalid_invoice.html', status=404)
     except SaleInvoice.DoesNotExist:
