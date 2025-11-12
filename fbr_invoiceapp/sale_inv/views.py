@@ -861,27 +861,43 @@ def invoice_view(request, invoice_id):
     return render(request, "sale_invoice_fbr.html", context)
 
 def generate_invoice_qr(invoice):
-    verification_url = f"https://aithon-invoice.onrender.com/verify/{invoice.invoice_number}/"
+    try:
+        verification_url = f"https://aithon-invoice.onrender.com/verify/{invoice.invoice_number}/"
+        print(f"[DEBUG] Generating QR for Invoice: {invoice.invoice_number}")
+        print(f"[DEBUG] Verification URL: {verification_url}")
 
-    qr = qrcode.QRCode(version=2, box_size=10, border=4)
-    qr.add_data(verification_url)
-    qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
+        qr = qrcode.QRCode(version=2, box_size=10, border=4)
+        qr.add_data(verification_url)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
 
-    buffer = BytesIO()
-    img.save(buffer, format="PNG")
-    filename = f"invoice_qr_{invoice.invoice_number}.png"
-    invoice.qr_code.save(filename, ContentFile(buffer.getvalue()), save=True)
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        filename = f"invoice_qr_{invoice.invoice_number}.png"
+        print(f"[DEBUG] Saving QR image as: {filename}")
+        invoice.qr_code.save(filename, ContentFile(buffer.getvalue()), save=True)
+        print(f"[DEBUG] QR code saved successfully for Invoice {invoice.invoice_number}")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to generate QR for Invoice {invoice.invoice_number}: {e}")
 
 def verify_invoice(request, invoice_number):
     try:
+        print(f"[DEBUG] Verifying Invoice: {invoice_number}")
         invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
+        print(f"[DEBUG] Invoice fetched successfully: {invoice.invoice_number}")
     except SaleInvoice.DoesNotExist:
+        print(f"[WARNING] Invoice not found: {invoice_number}")
         return render(request, 'invalid_invoice.html', status=404)
     except Exception as e:
         # log the error
-        print(f"Error fetching invoice {invoice_number}: {e}")
+        print(f"[ERROR] Error fetching invoice {invoice_number}: {e}")
         return render(request, 'invalid_invoice.html', status=500)
+    
+    if invoice.qr_code:
+        print(f"[DEBUG] QR code path: {invoice.qr_code.url}")
+    else:
+        print(f"[WARNING] Invoice {invoice_number} has no QR code")
 
     return render(request, 'qr_verification.html', {'invoice': invoice})
 
