@@ -25,5 +25,5 @@ urlpatterns = [
     path('verify/<str:fbr_invoice_number>/', verify_invoice, name='verify_invoice'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
