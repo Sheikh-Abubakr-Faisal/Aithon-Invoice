@@ -75,7 +75,7 @@
 
             <div class="invoice-details">
                 <p><strong>Invoice #:</strong> {{ invoice.invoice_number }}</p>
-                <p><strong>Company:</strong> {{ invoice.company.name }}</p>
+                <p><strong>Company:</strong> {{ company_info.name }}</p>
                 <p><strong>Buyer:</strong> {{ invoice.buyer.name }}</p>
                 <p><strong>Date:</strong> {{ invoice.date }}</p>
                 <p><strong>Grand Total:</strong> Rs. {{ invoice.grand_total|floatformat:2 }}</p>
