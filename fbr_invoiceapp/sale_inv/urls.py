@@ -22,7 +22,7 @@ urlpatterns = [
     path("invoice/pdf/<int:invoice_id>/", invoice_pdf, name="invoice_pdf"),
     path("invoice_view/<int:invoice_id>/", invoice_view, name="invoice_view"),
     path("post-sale-invoice/<int:invoice_id>/", post_sale_invoice, name="post_sale_invoice"),
-    path('verify/<str:invoice_number>/', verify_invoice, name='verify_invoice'),
+    path('verify/<str:fbr_invoice_number>/', verify_invoice, name='verify_invoice'),
 ]
 
 if settings.DEBUG:

@@ -870,18 +870,22 @@ def generate_invoice_qr(invoice):
 
     buffer = BytesIO()
     img.save(buffer, format="PNG")
-    filename = f"invoice_qr_{invoice.invoice_number}.png"
+    filename = f"invoice_qr_{invoice.fbr_invoice_number}.png"
     invoice.qr_code.save(filename, ContentFile(buffer.getvalue()), save=True)
 
-def verify_invoice(request, invoice_number):
+def verify_invoice(request, fbr_invoice_number):
     try:
+        print(f"Verifying FBR invoice number: {fbr_invoice_number}")  # Debug log
         # invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
-        invoice = SaleInvoice.objects.get(invoice_number=invoice_number)
+        invoice = SaleInvoice.objects.select_related('company', 'buyer').get(fbr_invoice_number=fbr_invoice_number)
     except SaleInvoice.DoesNotExist:
+        print(f"❌ Invoice not found for FBR number {fbr_invoice_number}")
         return render(request, 'invalid_invoice.html', status=404)
     except Exception as e:
+        print(f"⚠️ Unexpected error verifying invoice: {e}")
         return render(request, 'invalid_invoice.html', status=500)
     
+    print(f"✅ Invoice verified successfully for {fbr_invoice_number}")
     return render(request, 'qr_verification.html', {'invoice': invoice,
                                                     #  'grand_total': invoice.grand_total(),
                                                     #    'company_info': invoice.company,
