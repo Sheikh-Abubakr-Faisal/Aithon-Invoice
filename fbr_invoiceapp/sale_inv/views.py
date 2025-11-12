@@ -884,8 +884,12 @@ def generate_invoice_qr(invoice):
 def verify_invoice(request, invoice_number):
     try:
         print(f"[DEBUG] Verifying Invoice: {invoice_number}")
-        invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
+        # invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
+        invoice = SaleInvoice.objects.get(invoice_number=invoice_number)
         print(f"[DEBUG] Invoice fetched successfully: {invoice.invoice_number}")
+        print(f"[DEBUG] Company: {invoice.company}")
+        print(f"[DEBUG] Buyer: {invoice.buyer}")
+        print(f"[DEBUG] Grand Total: {invoice.grand_total()}")
     except SaleInvoice.DoesNotExist:
         print(f"[WARNING] Invoice not found: {invoice_number}")
         return render(request, 'invalid_invoice.html', status=404)
@@ -899,7 +903,10 @@ def verify_invoice(request, invoice_number):
     else:
         print(f"[WARNING] Invoice {invoice_number} has no QR code")
 
-    return render(request, 'qr_verification.html', {'invoice': invoice, 'grand_total': invoice.grand_total(), 'company_info': invoice.company, })
+    return render(request, 'qr_verification.html', {'invoice': invoice,
+                                                    #  'grand_total': invoice.grand_total(),
+                                                    #    'company_info': invoice.company,
+                                                         })
 
 
 
