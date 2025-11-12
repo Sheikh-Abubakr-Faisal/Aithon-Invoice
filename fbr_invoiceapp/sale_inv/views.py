@@ -877,7 +877,7 @@ def verify_invoice(request, fbr_invoice_number):
     try:
         print(f"Verifying FBR invoice number: {fbr_invoice_number}")  # Debug log
         # invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
-        invoice = SaleInvoice.objects.select_related('company').get(fbr_invoice_number=fbr_invoice_number)
+        invoice = SaleInvoice.objects.select_related('company').filter(fbr_invoice_number=fbr_invoice_number).first()
         if not invoice:
             print(f"❌ No invoice found for {fbr_invoice_number}")
             return render(request, 'invalid_invoice.html', status=404)
