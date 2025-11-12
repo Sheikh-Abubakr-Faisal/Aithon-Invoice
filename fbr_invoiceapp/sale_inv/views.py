@@ -875,11 +875,16 @@ def generate_invoice_qr(invoice):
 
 def verify_invoice(request, invoice_number):
     try:
-        invoice = SaleInvoice.objects.get(invoice_number=invoice_number)
+        invoice = SaleInvoice.objects.select_related('company', 'buyer').get(invoice_number=invoice_number)
     except SaleInvoice.DoesNotExist:
         return render(request, 'invalid_invoice.html', status=404)
+    except Exception as e:
+        # log the error
+        print(f"Error fetching invoice {invoice_number}: {e}")
+        return render(request, 'invalid_invoice.html', status=500)
 
     return render(request, 'qr_verification.html', {'invoice': invoice})
+
 
 
 
