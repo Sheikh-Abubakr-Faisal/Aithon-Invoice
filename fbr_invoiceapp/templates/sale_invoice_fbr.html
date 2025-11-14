@@ -135,12 +135,12 @@
                         </tr>
                     </table>
             </div>
-            {% if invoice.qr_code %}
-    <div class="text-center col-lg-3">
-        <img src="{{ invoice.qr_code.url }}" alt="QR Code" style="width:1in; height:1in; object-fit:contain;">
-        <p class="text-muted small">Scan to verify invoice</p>
-    </div>
-{% endif %}
+    {% if invoice.is_sent and invoice.qr_code %}
+        <div class="text-center col-lg-3">
+            <img src="{{ invoice.qr_code.url }}" alt="QR Code" style="width:1in; height:1in; object-fit:contain;">
+            <p class="text-muted small">Scan to verify invoice</p>
+        </div>
+    {% endif %}
         </div>
     </div>
 

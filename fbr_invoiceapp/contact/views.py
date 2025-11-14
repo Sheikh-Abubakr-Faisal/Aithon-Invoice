@@ -19,30 +19,7 @@ def contact(request):
             message=message
         )
 
-#         # Compose email
-#         full_message = f"""
-# New contact message from your website:
-
-# Name: {name}
-# Phone: {phone}
-# Subject: {subject}
-
-# Message:
-# {message}
-#         """
-
-#         try:
-#             send_mail(
-#                 subject=f"[Contact Form] {subject}",
-#                 message=full_message,
-#                 from_email=settings.EMAIL_HOST_USER,  # use your server email
-#                 recipient_list=['abubakrsheikh44@gmail.com'],
-#                 fail_silently=False,
-#             )
-#             messages.success(request, '✅ Your message has been sent successfully!')
-#         except Exception as e:
-#             messages.error(request, f"⚠️ Error sending email: {str(e)}")
-
-#         return redirect('index')
+        messages.success(request, "Your message has been received. We will contact you soon!")
+        return redirect('index')
 
     return render(request, 'index.html')

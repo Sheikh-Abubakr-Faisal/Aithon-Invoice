@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% block main %}
+{% if messages %} {{ message.tags }}
+                <div class="alert alert-primary" role="alert">
+                {% for message in messages %} {{ message }} {% endfor %}
+                </div>
+                {% endif %}
+
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <div>
@@ -125,8 +131,8 @@
 </div>
     <div class="col-lg-12 row text-center mt-4 mb-5">
             <h4 class="col-lg-12 contact_header">Or Reach Us Directly</h4>
-            <a class="contact_whatsapp col-lg-6"><i class="contact_icon_whatsapp bi bi-whatsapp"></i>WhatsApp</a>
-            <a class="contact_email col-lg-6"><i class="contact_icon_email bi bi-envelope"></i>Email</a>
+            <a href="https://wa.me/923156187461" class="contact_whatsapp col-lg-6"><i class="contact_icon_whatsapp bi bi-whatsapp"></i>WhatsApp</a>
+            <a href="mailto:aithoninvoice@gmail.com" class="contact_email col-lg-6"><i class="contact_icon_email bi bi-envelope"></i>Email</a>
     </div>
 </div>
 </section>
