@@ -20,7 +20,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-e8td@op&zmj_*g=t=z94&
 # DEBUG = True
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['aithon-invoice.onrender.com']
+ALLOWED_HOSTS = [
+    'aithon-invoice.onrender.com'
+    'aithoninvoice.com',
+    'www.aithoninvoice.com',
+    ]
 
 
 # Application definition
