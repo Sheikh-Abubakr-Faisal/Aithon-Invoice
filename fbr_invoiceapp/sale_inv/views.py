@@ -861,7 +861,7 @@ def invoice_view(request, invoice_id):
     return render(request, "sale_invoice_fbr.html", context)
 
 def generate_invoice_qr(invoice):
-    verification_url = f"https://aithon-invoice.onrender.com/verify/{invoice.fbr_invoice_number}"
+    verification_url = f"https://aithoninvoice.com/verify/{invoice.fbr_invoice_number}"
 
     qr = qrcode.QRCode(version=2, box_size=10, border=4)
     qr.add_data(verification_url)
