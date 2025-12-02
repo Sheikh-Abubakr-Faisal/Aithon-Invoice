@@ -870,8 +870,11 @@ def generate_invoice_qr(invoice):
 
     buffer = BytesIO()
     img.save(buffer, format="PNG")
-    filename = f"invoice_qr_{invoice.fbr_invoice_number}.png"
-    invoice.qr_code.save(filename, ContentFile(buffer.getvalue()), save=True)
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+
+    # Save to invoice.qr_code
+    invoice.qr_code = qr_base64
+    invoice.save()
 
 def verify_invoice(request, fbr_invoice_number):
     try:

@@ -22,7 +22,7 @@ class SaleInvoice(models.Model):
 
     fbr_invoice_number = models.CharField(max_length=100, blank=True, null=True, unique=True)
     fbr_dated = models.DateTimeField(blank=True, null=True)
-    qr_code = models.ImageField(upload_to='invoice_qr/', blank=True, null=True)  
+    qr_code = models.TextField(blank=True, null=True)  
     is_sent = models.BooleanField(default=False)
 
     class Meta:
