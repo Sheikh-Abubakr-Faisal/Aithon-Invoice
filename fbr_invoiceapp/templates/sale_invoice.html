@@ -208,16 +208,16 @@
                 {% endif %}
                         <div class="row mb-5">
                             <!-- Always show -->
-                        <a class="btn btn-success mx-auto card-link col-lg-2 col-md-3 col-sm-3 col-5" href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-primary">Save PDF</a>
-                        <a class="btn btn-success mx-auto card-link col-lg-2 col-md-3 col-sm-3 col-5" href="#" class="btn btn-info">View</a>
+                        <a class="btn btn-success mx-auto card-link col-lg-3 col-md-3 col-sm-12 col-12" href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-primary">Save PDF</a>
+                        <a class="btn btn-success mx-auto card-link col-lg-3 col-md-3 col-sm-12 col-12" href="{% url 'sale_invoice_view' invoice.id %}" class="btn btn-info">View</a>
 
                         {% if not invoice.is_sent %}
                             <!-- Only before sending -->
-                            <form action="{% url 'post_sale_invoice' invoice.id %}" method="post" class="col-lg-2 row">
+                            <form action="{% url 'post_sale_invoice' invoice.id %}" method="post" class="col-lg-3 col-md-3 col-sm-12 col-12 row">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success mx-auto card-link col-lg-12 col-md-3 col-sm-3 col-5">Send to FBR</button>
+                            <button type="submit" class="btn btn-success mx-auto card-link col-lg-12 col-md-12 col-sm-12 col-12">Send to FBR</button>
                             </form>
-                            <a class="btn btn-success mx-auto card-link col-lg-2 col-md-3 col-sm-3 col-5" href="#" class="btn btn-danger">Delete</a>
+                            <!-- <a class="btn btn-success mx-auto card-link col-lg-2 col-md-5 col-sm-12 col-12" href="#" class="btn btn-danger">Delete</a> -->
                         {% endif %}
                                                 </div>
         </div>

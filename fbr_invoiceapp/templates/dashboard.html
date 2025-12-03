@@ -10,17 +10,17 @@
         </div>
         <div class="col-lg-12 row">
             <h2 class="mb-3 mt-3">Metrics</h2><hr class="mb-4">
-            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 shadow-lg metric card">Total Sales: {{ total_sales|floatformat:2 }}</div>
-            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 shadow-lg metric card">Total Purchases: {{ total_purchases|floatformat:2 }}</div>
-            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 shadow-lg metric card">Total Invoices: {{ total_invoices }}</div>
-            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 shadow-lg metric card">Total Products: {{ total_products }}</div>
+            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 mt-1 shadow-lg metric card">Total Sales: {{ total_sales|floatformat:2 }}</div>
+            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 mt-1 shadow-lg metric card">Total Purchases: {{ total_purchases|floatformat:2 }}</div>
+            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 mt-1 shadow-lg metric card">Total Invoices: {{ total_invoices }}</div>
+            <div class="col-lg-2 text-center mx-auto pt-4 pb-4 mt-1 shadow-lg metric card">Total Products: {{ total_products }}</div>
         </div>
         <div class="col-lg-12 row">
             <h2 class="mb-3 mt-5">Quick Links</h2><hr class="mb-4">
-            <a href="{% url "sale_invoice_details" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 card">Create Sale Invoice</a>
-            <a href="{% url "purchase_invoice_details" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 card">Create Purchase Invoice</a>
-            <a href="{% url "all_products" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 card">Add Product</a>
-            <a href="{% url "category" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 card">Add Category</a>
+            <a href="{% url "sale_invoice_details" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 mt-1 card">Create Sale Invoice</a>
+            <a href="{% url "purchase_invoice_details" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 mt-1 card">Create Purchase Invoice</a>
+            <a href="{% url "all_products" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 mt-1 card">Add Product</a>
+            <a href="{% url "category" %}" class="quick_links col-lg-2 mx-auto btn pb-4 pt-4 mt-1 card">Add Category</a>
         
         </div>
         <div class="col-lg-12 row">

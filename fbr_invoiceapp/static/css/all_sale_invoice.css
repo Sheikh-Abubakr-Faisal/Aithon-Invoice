@@ -32,7 +32,7 @@ p {
 
 @media (max-width: 576px) {
     p {
-        font-size: 10px;
+        font-size: 17px;
     }
 
     th, td {
@@ -40,11 +40,11 @@ p {
     }
 
     h6 {
-        font-size: 12px;
+        font-size: 17px;
     }
 
     h5 {
-        font-size: 14px;
+        font-size: 20px;
     }
 
     .card {
@@ -54,7 +54,7 @@ p {
 
 @media (max-width: 480px) {
     p {
-        font-size: 7px;
+        font-size: 15px;
     }
 
     th, td {
@@ -62,11 +62,11 @@ p {
     }
 
     h6 {
-        font-size: 9px;
+        font-size: 15px;
     }
 
     h5 {
-        font-size: 11px;
+        font-size: 18px;
     }
 
     .card {

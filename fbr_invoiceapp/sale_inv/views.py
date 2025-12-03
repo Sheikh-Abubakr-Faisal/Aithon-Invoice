@@ -50,6 +50,7 @@ def sale_invoice_details(request, invoice_id=None):
         buyer_id = request.POST.get('buyer')
         doc_type_id = request.POST.get('doc_type_id')
         doc_type_description = request.POST.get('doc_type_description')
+        ignore_stock = request.POST.get('ignore_stock') == 'on'
 
         try:
             buyer = get_object_or_404(Client, id=buyer_id, company=request.user.company)
@@ -91,7 +92,8 @@ def sale_invoice_details(request, invoice_id=None):
                 date=date,
                 doc_type_id=doc_type_id,
                 doc_type_description=doc_type_description,
-                buyer=buyer
+                buyer=buyer,
+                ignore_stock=ignore_stock,
             )
             messages.success(request, f'Sale Invoice "{invoice_number}" created successfully.')
             return redirect('sale_invoice', invoice_id=invoice.id)
@@ -101,11 +103,25 @@ def sale_invoice_details(request, invoice_id=None):
             messages.success(request, f"Something went wrong: {e}")
 
         return redirect('sale_invoice_details')
+    
+    # Auto invoice counter (per company)
+    last_invoice = SaleInvoice.objects.filter(company=company).order_by('-id').first()
+
+    if last_invoice:
+        last_num = last_invoice.invoice_number
+
+        if str(last_num).isdigit():
+            next_invoice_number = str(int(last_num) + 1).zfill(len(last_num))
+        else:
+            next_invoice_number = ""
+    else:
+        next_invoice_number = "0001"  # starting number
 
     return render(request, 'sale_invoice_details.html', {
         'title': 'Sale Invoice Details',
         'clients': clients,
-        'document_types': document_types
+        'document_types': document_types,
+        'next_invoice_number': next_invoice_number,
     })
 
 @login_required(login_url='sign_in')
@@ -113,6 +129,7 @@ def sale_invoice(request, invoice_id):
     company = request.user.company
     products = Product.objects.filter(company=company)
     invoice = get_object_or_404(SaleInvoice, id=invoice_id, company=company)
+    ignore_stock = invoice.ignore_stock
     item = SaleItem.objects.filter(invoice=invoice)
 
     # Fetch from FBR API
@@ -168,7 +185,7 @@ def sale_invoice(request, invoice_id):
 
             # Stock validation
             # --- Stock validation (skip for services) ---
-            if product.product_type == 'good':
+            if not ignore_stock and product.product_type == 'good':
                 purchased_stock = PurchaseItem.objects.filter(
                     product=product, invoice__company=company
                 ).aggregate(total_qty=Sum("quantity"))["total_qty"] or 0
@@ -458,6 +475,7 @@ def sale_inv_product_update(request, invoice_id, item_id):
     company = request.user.company
     products = Product.objects.filter(company=company)
     invoice = get_object_or_404(SaleInvoice, id=invoice_id, company=company)
+    ignore_stock = invoice.ignore_stock
     item = get_object_or_404(SaleItem, id=item_id, invoice=invoice) 
 
     token = company.fbr_api_key
@@ -514,7 +532,7 @@ def sale_inv_product_update(request, invoice_id, item_id):
 
                         # calculate stock again
                         # --- Stock validation (skip for services) ---
-            if product.product_type == 'good':
+            if product.product_type == 'good' and not ignore_stock:
                 purchased_stock = PurchaseItem.objects.filter(
                     product=product, product__company=company
                 ).aggregate(total_qty=Sum("quantity"))["total_qty"] or 0
@@ -891,7 +909,4 @@ def verify_invoice(request, fbr_invoice_number):
                                                     'grand_total': invoice.grand_total(),
                                                     'company_info': invoice.company,
                                                          })
-
-
-
 

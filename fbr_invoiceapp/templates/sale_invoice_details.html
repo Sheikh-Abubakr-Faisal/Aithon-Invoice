@@ -15,7 +15,7 @@
 
                     <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
                         <label for="invoice_number" class="form-label">Invoice Number</label>
-                        <input type="text" class="form-control" id="invoice_number" name="invoice_number" required>
+                        <input type="text" class="form-control" id="invoice_number" name="invoice_number" value="{{ next_invoice_number }}" required>
                     </div>
                     <div class="mb-3 col-lg-4 col-md-4 col-sm-12">
                         <label for="date" class="form-label">Date</label>
@@ -33,7 +33,12 @@
                     </select>
                     <!-- Hidden field to store doc description -->
                     <input type="hidden" name="doc_type_description" id="doc_type_description">
-                </div>
+                    </div>
+                    <div class="form-check form-switch mb-3 col-lg-12 col-md-12 col-sm-12">
+                    <input class="form-check-input" type="checkbox" role="switch" id="ignore_stock" name="ignore_stock" checked>
+                    <label class="form-check-label" for="ignore_stock">Ignore stock (do not check or update stock)</label>
+                    </div>
+
                     <h2 class="mb-3">Client Details</h2>
                     <hr>
                     <div class="mb-3 col-lg-4 col-md-4 col-sm-12">

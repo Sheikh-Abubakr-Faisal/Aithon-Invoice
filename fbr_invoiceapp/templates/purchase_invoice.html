@@ -151,9 +151,9 @@
             <form method="post" action="{% url 'delete_purchase_invoice' invoice.id %}">
                         {% csrf_token %}
                         <div class="row mb-5">
-                        <a href="{% url "purchase_invoice_view" invoice.id %}" class="btn btn-secondary mx-auto card-link col-lg-3 col-md-3 col-sm-3 col-5">View</a>
-                        <a href="{% url "purchase_invoice_pdf" invoice.id %}" class="btn btn-success mx-auto card-link col-lg-3 col-md-3 col-sm-3 col-5">Save as PDF</a>
-                        <button type="submit" name="action" value="del_product_inv" class="btn btn-danger mx-auto card-link col-lg-3 col-md-3 col-sm-3 col-5">Delete</button>
+                        <a href="{% url "purchase_invoice_view" invoice.id %}" class="btn btn-secondary mx-auto card-link col-lg-3 col-md-3 col-sm-3 col-12 mt-2">View</a>
+                        <a href="{% url "purchase_invoice_pdf" invoice.id %}" class="btn btn-success mx-auto card-link col-lg-3 col-md-3 col-sm-3 col-12 mt-2">Save as PDF</a>
+                        <button type="submit" name="action" value="del_product_inv" class="btn btn-danger mx-auto card-link col-lg-3 col-md-3 col-sm-3 col-12 mt-2">Delete</button>
                         </div>
         </div>
     </div>

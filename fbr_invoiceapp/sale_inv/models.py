@@ -19,6 +19,7 @@ class SaleInvoice(models.Model):
     date = models.DateField(null=False, blank=False)
     doc_type_id = models.IntegerField(null=False, blank=False)
     doc_type_description = models.CharField(max_length=100, null=False, blank=False)
+    ignore_stock = models.BooleanField(default=False)
 
     fbr_invoice_number = models.CharField(max_length=100, blank=True, null=True, unique=True)
     fbr_dated = models.DateTimeField(blank=True, null=True)
