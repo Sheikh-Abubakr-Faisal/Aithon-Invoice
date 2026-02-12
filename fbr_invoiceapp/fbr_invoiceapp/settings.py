@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,20 +11,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0'
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0')
+# SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0')
+SECRET_KEY = config('DJANGO_SECRET_KEY', default=os.environ.get('SECRET_KEY', 'django-insecure-e8td@op&zmj_*g=t=z94&lzg)md==)jc^kyaj#9a_8yj(k=4o0'))
 
 # import os
 # SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
+# DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    'aithon-invoice.onrender.com'
+    'aithon-invoice.onrender.com',
     'aithoninvoice.com',
     'www.aithoninvoice.com',
+    'localhost',
     ]
 
 
@@ -84,15 +87,44 @@ WSGI_APPLICATION = 'fbr_invoiceapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import dj_database_url
+import os
+# import dj_database_url
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-        # conn_max_age=600,
-        # ssl_require=True
-    )
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'aithoninvoice_db',            # your DB name
+#         'USER': 'aithoninvoice_user',          # your DB user
+#         'PASSWORD': 'Abubakr@123',             # your DB password
+#         'HOST': 'localhost',                   # since PostgreSQL is on your Windows machine
+#         'PORT': '5432',                        # default PostgreSQL port
+#     }
+# }
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # optional: dj-database-url will parse DATABASE_URL if installed
+    try:
+        import dj_database_url
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
+        }
+    except Exception:
+        # fallback: treat as not present — use DB_* below
+        DATABASE_URL = None
+
+if not DATABASE_URL:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',   # change to mysql if needed
+            'NAME': config('DB_NAME', default='aithoninvoice_db'),
+            'USER': config('DB_USER', default='aithoninvoice_user'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+        }
+    }
 
 
 # Password validation
@@ -138,6 +170,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+# Whitenoise for serving static files in production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Media files (user uploaded)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -168,7 +203,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Prepearing app for render deployment
-import os
 
 # ALLOWED_HOSTS = ['aithon-invoice.onrender.com']  # or ['your-render-app-name.onrender.com']
 # DEBUG = False
